@@ -8,12 +8,22 @@ MEALS = (
     ('T', 'Trash')
 )
 
+class Language(models.Model):
+    language = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.language
+
+    def get_absolute_url(self):
+        return reverse('languages_detail', kwargs={'pk': self.id})
+
 # Create your models here.
 class Bird(models.Model):
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
     age = models.IntegerField()
+    languages = models.ManyToManyField(Language)
 
     def __str__(self):
         return self.name

@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Bird
+from django.views.generic import ListView, DetailView
+from .models import Bird, Language
 from .forms import FeedingForm
 
 # Create your views here.
 class BirdCreate(CreateView):
     model = Bird
-    fields = '__all__'
+    fields = ['name', 'breed', 'description', 'age' ]
     success_url = '/birds/'
 
 class BirdUpdate(UpdateView):
@@ -29,9 +30,10 @@ def birds_index(request):
 
 def birds_detail(request, bird_id):
     bird = Bird.objects.get(id=bird_id)
+    languages_bird_doesnt_have = Language.objects.exclude(id__in=bird.languages.all().values_list('id'))
     feeding_form = FeedingForm()
     return render(request, 'birds/detail.html', {
-        'bird': bird, 'feeding_form': feeding_form
+        'bird': bird, 'languages': languages_bird_doesnt_have, 'feeding_form': feeding_form
     })
 
 def add_feeding(request, bird_id):
@@ -40,4 +42,30 @@ def add_feeding(request, bird_id):
       new_feeding = form.save(commit=False)
       new_feeding.bird_id = bird_id
       new_feeding.save()
+  return redirect('detail', bird_id=bird_id)
+
+class LanguageList(ListView):
+  model = Language
+
+class LanguageDetail(DetailView):
+  model = Language
+
+class LanguageCreate(CreateView):
+  model = Language
+  fields = '__all__'
+
+class LanguageUpdate(UpdateView):
+  model = Language
+  fields = '__all__'
+
+class LanguageDelete(DeleteView):
+  model = Language
+  success_url = '/languages/'
+
+def assoc_language(request, bird_id, language_id):
+  Bird.objects.get(id=bird_id).languages.add(language_id)
+  return redirect('detail', bird_id=bird_id)
+
+def unassoc_language(request, bird_id, language_id):
+  Bird.objects.get(id=bird_id).languages.remove(language_id)
   return redirect('detail', bird_id=bird_id)
