@@ -48,3 +48,10 @@ class Feeding(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+class Photo(models.Model):
+    url = models.CharField(max_length=200)
+    bird = models.ForeignKey(Bird, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Photo for bird_id: {self.bird_id} @{self.url}"

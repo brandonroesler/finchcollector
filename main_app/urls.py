@@ -17,4 +17,5 @@ urlpatterns = [
     path('languages/create/', views.LanguageCreate.as_view(), name='languages_create'),
     path('languages/<int:pk>/update/', views.LanguageUpdate.as_view(), name='languages_update'),
     path('languages/<int:pk>/delete/', views.LanguageDelete.as_view(), name='languages_delete'),    
+    path('birds/<int:bird_id>/add_photo/', views.add_photo, name='add_photo'),
 ]
