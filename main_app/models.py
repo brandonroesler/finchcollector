@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from datetime import date
 
+from django.contrib.auth.models import User
+
 MEALS = (
     ('R', 'Rodents'),
     ('F', 'Fish'),
@@ -24,6 +26,7 @@ class Bird(models.Model):
     description = models.TextField(max_length=250)
     age = models.IntegerField()
     languages = models.ManyToManyField(Language)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
